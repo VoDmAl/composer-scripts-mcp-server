@@ -1,0 +1,59 @@
+{
+    "name": "vodmal/composer-scripts-mcp-server",
+    "description": "A PHP library that exposes Composer scripts as capabilities through a Model Context Protocol (MCP) server",
+    "type": "composer-plugin",
+    "keywords": ["mcp", "composer", "scripts", "ai", "assistant", "automation"],
+    "homepage": "https://github.com/vodmal/composer-scripts-mcp-server",
+    "license": ["GPL-3.0-or-later", "proprietary"],
+    "support": {
+        "issues": "https://github.com/vodmal/composer-scripts-mcp-server/issues",
+        "source": "https://github.com/vodmal/composer-scripts-mcp-server"
+    },
+    "authors": [
+        {
+            "name": "Dmitry Vorobyev",
+            "email": "dmitry@vorobyev.org",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "composer-plugin-api": "^2.0",
+        "php-mcp/server": "^2.1",
+        "symfony/console": "^7.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "composer/composer": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "VoDmAl\\": "src/VoDmAl/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VoDmAl\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "phpunit": "./vendor/bin/phpunit",
+        "test": [
+            "@test:unit:phpunit"
+        ],
+        "test:unit:phpunit": [
+            "@phpunit --testsuite Unit"
+        ],
+        "mcp:scripts:start": "bin/start-server",
+        "mcp:scripts:install:claude": "bin/install-claude"
+    },
+    "bin": [
+        "bin/start-server",
+        "bin/install-claude"
+    ],
+    "extra": {
+        "class": "VoDmAl\\ComposerScriptsMCP\\Plugin\\ComposerScriptsPlugin"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

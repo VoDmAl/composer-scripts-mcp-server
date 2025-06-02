@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of VoDmAl Composer Scripts MCP Server
+ *
+ * (c) Dmitry Vorobyev <dmitry@vorobyev.org>
+ *
+ * This source file is subject to dual licensing:
+ * - GPL-3.0-or-later for open source use
+ * - Commercial license for proprietary use
+ * 
+ * For commercial licensing, contact: dmitry@vorobyev.org
+ */
+
+// Find the autoloader
+$autoloadPaths = [
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$autoloaderFound = false;
+foreach ($autoloadPaths as $path) {
+    if (file_exists($path)) {
+        require $path;
+        $autoloaderFound = true;
+        break;
+    }
+}
+
+if (!$autoloaderFound) {
+    die("Could not find autoloader. Please run 'composer install'.\n");
+}
+
+use VoDmAl\ComposerScriptsMCP\Application;
+
+// Create the application
+$application = new Application();
+
+// Run the application with the start-server command
+$application->setDefaultCommand('start-server', true);
+$exitCode = $application->run();
+
+exit($exitCode);
