@@ -74,8 +74,10 @@ class InstallClaudeCommand extends Command
     {
         // Find the composer.json file
         $composerJsonPaths = [
-            __DIR__ . '/../../../../composer.json',
+            // When it's installed into vendor folder
             __DIR__ . '/../../../../../../../composer.json',
+            // When it's a project itself
+            __DIR__ . '/../../../../composer.json',
         ];
 
         foreach ($composerJsonPaths as $path) {
@@ -90,7 +92,8 @@ class InstallClaudeCommand extends Command
                 }
 
                 // If name is not in composer.json, use the directory name
-                $dirPath = dirname($path);
+                $realPath = realpath($path);
+                $dirPath = dirname($realPath);
                 $dirName = basename($dirPath);
                 if (!empty($dirName)) {
                     return $dirName;
@@ -147,7 +150,7 @@ class InstallClaudeCommand extends Command
             $io->text("\nPlease manually merge these lines with your Claude configuration file:");
             $config = [
                 'mcpServers' => [
-                    $this->serverName => [
+                    sprintf('composer-scripts-mcp-%s', $this->serverName) => [
                         'command' => $this->serverPath,
                         'args' => []
                     ]
@@ -189,8 +192,10 @@ class InstallClaudeCommand extends Command
     private function findServerPath(): ?string
     {
         $paths = [
-                __DIR__ . '/../../../../bin/mcp-server-start',
-                __DIR__ . '/../../../../../../../bin/mcp-server-start',
+            // When it's installed into vendor folder
+            __DIR__ . '/../../../../../../../bin/mcp-server-start',
+            // When it's a project itself
+            __DIR__ . '/../../../../bin/mcp-server-start',
         ];
 
         foreach ($paths as $path) {
@@ -291,41 +296,12 @@ class InstallClaudeCommand extends Command
             $config['mcpServers'] = [];
         }
 
-        $config['mcpServers'][$this->serverName] = [
+        $config['mcpServers'][sprintf('composer-scripts-mcp-%s', $this->serverName)] = [
             'command' => $this->serverPath,
             'args' => []
         ];
 
         $io->text("Updating existing configuration file: {$this->outputFile}");
-
-        // Write the configuration to the output file
-        if (file_put_contents($this->outputFile, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) === false) {
-            $io->error("Error: Could not write to file: {$this->outputFile}");
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Create a new configuration file.
-     *
-     * @param SymfonyStyle $io The Symfony style
-     * @return bool True if the file was created successfully, false otherwise
-     */
-    private function createConfigFile(SymfonyStyle $io): bool
-    {
-        // Create a new configuration
-        $config = [
-            'mcpServers' => [
-                $this->serverName => [
-                    'command' => $this->serverPath,
-                    'args' => []
-                ]
-            ]
-        ];
-
-        $io->text("Creating new configuration file: {$this->outputFile}");
 
         // Write the configuration to the output file
         if (file_put_contents($this->outputFile, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) === false) {
