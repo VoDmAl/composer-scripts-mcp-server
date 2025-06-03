@@ -1,8 +1,8 @@
 # VoDmAl Composer Scripts MCP Server
 
-A PHP library that exposes your project’s Composer scripts as MCP (Model Context Protocol) tools. Once installed, AI assistants (or any MCP client) can discover and execute your Composer scripts automatically—no need to explain commands each time.
+A PHP library that exposes your project's Composer scripts as MCP (Model Context Protocol) tools. Once installed, AI assistants (or any MCP client) can discover and execute your Composer scripts automatically—no need to explain commands each time.
 
-This works with **any PHP project**, and you can connect **multiple projects** without limits. Each project’s MCP tool name is derived automatically from its `composer.json` (e.g., the `"name"` field).
+This works with **any PHP project**, and you can connect **multiple projects** without limits. Each project's MCP tool name is derived automatically from its `composer.json` (e.g., the `"name"` field).
 
 ## Why Use Composer Scripts?
 
@@ -87,33 +87,33 @@ composer require vodmal/composer-scripts-mcp-server
 composer install
 ```
 
-As soon as Composer finishes, your project’s composer.json will include two new scripts:
+As soon as Composer finishes, your project's composer.json will include two new scripts:
 ```
 "scripts": {
-    "mcp:scripts:start":      "vendor/bin/composer-server",
-    "mcp:scripts:install:claude": "vendor/bin/install-claude"
+    "mcp:server:start": "vendor/bin/start-server",
+    "mcp:server:install": "vendor/bin/install-claude"
 }
 ```
 
-You now have everything you need. You do not need to run composer mcp:scripts:start immediately. Instead, if you want to integrate with Claude Desktop (or any MCP-compatible LLM), run:
+You now have everything you need. You do not need to run composer mcp:server:start immediately. Instead, if you want to integrate with Claude Desktop (or any MCP-compatible LLM), run:
 ```
-composer mcp:scripts:install:claude
+composer mcp:server:install
 ```
 
 If Claude Desktop is installed and its configuration file is detected, this command merges the MCP configuration automatically.
 
-If it doesn’t find Claude’s config, it prints out a JSON snippet. Paste that snippet into your claude_config.json under "tools" and restart Claude.
+If it doesn't find Claude's config, it prints out a JSON snippet. Paste that snippet into your claude_config.json under "tools" and restart Claude.
 
 **Connect to any number of projects**
-You can run composer mcp:scripts:install:claude in each PHP project folder without limit. Each project’s tool name is pulled from its own composer.json "name" field, so multiple projects appear distinctly in Claude’s tool list.
+You can run composer mcp:server:install in each PHP project folder without limit. Each project's tool name is pulled from its own composer.json "name" field, so multiple projects appear distinctly in Claude's tool list.
 
-If you’re not using Claude
+If you're not using Claude
 Running:
 ```
-composer mcp:scripts:install:claude
+composer mcp:server:install
 ```
 
-will output a JSON block showing exactly how to launch the MCP server. Copy that into whatever LLM or MCP client configuration you need. Once that’s configured, your AI assistant can call the composer_list and composer_run MCP methods without further setup.
+will output a JSON block showing exactly how to launch the MCP server. Copy that into whatever LLM or MCP client configuration you need. Once that's configured, your AI assistant can call the composer_list and composer_run MCP methods without further setup.
 
 
 

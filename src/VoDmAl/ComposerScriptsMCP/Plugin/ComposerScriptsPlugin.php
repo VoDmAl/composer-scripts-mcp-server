@@ -65,7 +65,67 @@ class ComposerScriptsPlugin implements PluginInterface, EventSubscriberInterface
      */
     public function uninstall(Composer $composer, IOInterface $io): void
     {
-        // Nothing to do here
+        $this->composer = $composer;
+        $this->io = $io;
+
+        $this->io->write('<info>Removing VoDmAl Composer Scripts MCP Server scripts from your composer.json</info>');
+
+        // Get the path to the host project's composer.json
+        $composerJsonPath = $this->getCwd() . '/composer.json';
+
+        if (!file_exists($composerJsonPath)) {
+            $this->io->writeError('<error>Could not find composer.json in the current directory</error>');
+            return;
+        }
+
+        // Read the composer.json file
+        $composerJson = file_get_contents($composerJsonPath);
+        $composerConfig = json_decode($composerJson, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->io->writeError('<error>Could not parse composer.json: ' . json_last_error_msg() . '</error>');
+            return;
+        }
+
+        // Check if scripts section exists
+        if (!isset($composerConfig['scripts'])) {
+            $this->io->write('<info>No scripts section found in composer.json</info>');
+            return;
+        }
+
+        // Remove both old and new script signatures
+        $scriptsRemoved = false;
+
+        // List of scripts to remove (both old and new signatures)
+        $scriptsToRemove = [
+            // Old signatures
+            'start' => 'vendor/bin/start-server',
+            'start:http' => 'vendor/bin/start-server --http',
+            'install-claude' => 'vendor/bin/install-claude',
+
+            // New signatures
+            'mcp:server:start' => 'vendor/bin/start-server',
+            'mcp:server:install' => 'vendor/bin/install-claude'
+        ];
+
+        foreach ($scriptsToRemove as $script => $command) {
+            if (isset($composerConfig['scripts'][$script]) && $composerConfig['scripts'][$script] === $command) {
+                unset($composerConfig['scripts'][$script]);
+                $scriptsRemoved = true;
+                $this->io->write("<info>Removed script: {$script}</info>");
+            }
+        }
+
+        // Write the updated composer.json file
+        if ($scriptsRemoved) {
+            file_put_contents(
+                $composerJsonPath,
+                json_encode($composerConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+            );
+            $this->io->write('<info>Scripts removed successfully</info>');
+        } else {
+            $this->io->write('<info>No scripts were removed from composer.json</info>');
+        }
     }
 
     /**
@@ -120,33 +180,48 @@ class ComposerScriptsPlugin implements PluginInterface, EventSubscriberInterface
             $composerConfig['scripts'] = [];
         }
 
-        // Add our scripts
-        $scriptsAdded = false;
+        // Remove old script signatures if they exist
+        $scriptsChanged = false;
 
-        if (!isset($composerConfig['scripts']['start'])) {
-            $composerConfig['scripts']['start'] = 'vendor/bin/start-server';
-            $scriptsAdded = true;
+        // Check and remove old script signatures
+        $oldScripts = ['start', 'start:http', 'install-claude'];
+        foreach ($oldScripts as $script) {
+            if (isset($composerConfig['scripts'][$script])) {
+                // Only remove if it matches our expected values
+                $expectedValues = [
+                    'start' => 'vendor/bin/start-server',
+                    'start:http' => 'vendor/bin/start-server --http',
+                    'install-claude' => 'vendor/bin/install-claude'
+                ];
+
+                if ($composerConfig['scripts'][$script] === $expectedValues[$script]) {
+                    unset($composerConfig['scripts'][$script]);
+                    $scriptsChanged = true;
+                    $this->io->write("<info>Removed old script: {$script}</info>");
+                }
+            }
         }
 
-        if (!isset($composerConfig['scripts']['start:http'])) {
-            $composerConfig['scripts']['start:http'] = 'vendor/bin/start-server --http';
-            $scriptsAdded = true;
+        // Add our scripts with new names
+        if (!isset($composerConfig['scripts']['mcp:server:start'])) {
+            $composerConfig['scripts']['mcp:server:start'] = 'vendor/bin/start-server';
+            $scriptsChanged = true;
         }
 
-        if (!isset($composerConfig['scripts']['install-claude'])) {
-            $composerConfig['scripts']['install-claude'] = 'vendor/bin/install-claude';
-            $scriptsAdded = true;
+        if (!isset($composerConfig['scripts']['mcp:server:install'])) {
+            $composerConfig['scripts']['mcp:server:install'] = 'vendor/bin/install-claude';
+            $scriptsChanged = true;
         }
 
         // Write the updated composer.json file
-        if ($scriptsAdded) {
+        if ($scriptsChanged) {
             file_put_contents(
                 $composerJsonPath,
                 json_encode($composerConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
             );
-            $this->io->write('<info>Scripts added successfully</info>');
+            $this->io->write('<info>Scripts updated successfully</info>');
         } else {
-            $this->io->write('<info>All scripts already exist in composer.json</info>');
+            $this->io->write('<info>All scripts are already up to date in composer.json</info>');
         }
     }
 }

@@ -103,13 +103,11 @@ class ComposerScriptsPluginTest extends TestCase
 
         // Verify that the scripts were added
         $this->assertArrayHasKey('scripts', $updatedComposerJson);
-        $this->assertArrayHasKey('start', $updatedComposerJson['scripts']);
-        $this->assertArrayHasKey('start:http', $updatedComposerJson['scripts']);
-        $this->assertArrayHasKey('install-claude', $updatedComposerJson['scripts']);
+        $this->assertArrayHasKey('mcp:server:start', $updatedComposerJson['scripts']);
+        $this->assertArrayHasKey('mcp:server:install', $updatedComposerJson['scripts']);
 
-        $this->assertEquals('vendor/bin/start-server', $updatedComposerJson['scripts']['start']);
-        $this->assertEquals('vendor/bin/start-server --http', $updatedComposerJson['scripts']['start:http']);
-        $this->assertEquals('vendor/bin/install-claude', $updatedComposerJson['scripts']['install-claude']);
+        $this->assertEquals('vendor/bin/start-server', $updatedComposerJson['scripts']['mcp:server:start']);
+        $this->assertEquals('vendor/bin/install-claude', $updatedComposerJson['scripts']['mcp:server:install']);
 
         // Clean up
         unlink($composerJsonPath);
