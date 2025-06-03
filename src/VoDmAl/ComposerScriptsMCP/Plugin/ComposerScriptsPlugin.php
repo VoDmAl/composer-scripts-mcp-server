@@ -98,14 +98,14 @@ class ComposerScriptsPlugin implements PluginInterface, EventSubscriberInterface
 
         // List of scripts to remove (both old and new signatures)
         $scriptsToRemove = [
-            // Old signatures
+            // Old signatures @since 1.0.0
             'start' => 'vendor/bin/start-server',
             'start:http' => 'vendor/bin/start-server --http',
             'install-claude' => 'vendor/bin/install-claude',
 
-            // New signatures
-            'mcp:server:start' => 'vendor/bin/start-server',
-            'mcp:server:install' => 'vendor/bin/install-claude'
+            // New signatures @since 1.0.2
+            'mcp:server:start' => 'vendor/bin/mcp-server-start',
+            'mcp:server:install' => 'vendor/bin/mcp-server-install'
         ];
 
         foreach ($scriptsToRemove as $script => $command) {
@@ -183,7 +183,7 @@ class ComposerScriptsPlugin implements PluginInterface, EventSubscriberInterface
         // Remove old script signatures if they exist
         $scriptsChanged = false;
 
-        // Check and remove old script signatures
+        // Check and remove old script signatures @since 1.0.0
         $oldScripts = ['start', 'start:http', 'install-claude'];
         foreach ($oldScripts as $script) {
             if (isset($composerConfig['scripts'][$script])) {
@@ -202,14 +202,14 @@ class ComposerScriptsPlugin implements PluginInterface, EventSubscriberInterface
             }
         }
 
-        // Add our scripts with new names
+        // Add our scripts with new names @since 1.0.2
         if (!isset($composerConfig['scripts']['mcp:server:start'])) {
-            $composerConfig['scripts']['mcp:server:start'] = 'vendor/bin/start-server';
+            $composerConfig['scripts']['mcp:server:start'] = 'vendor/bin/mcp-server-start';
             $scriptsChanged = true;
         }
 
         if (!isset($composerConfig['scripts']['mcp:server:install'])) {
-            $composerConfig['scripts']['mcp:server:install'] = 'vendor/bin/install-claude';
+            $composerConfig['scripts']['mcp:server:install'] = 'vendor/bin/mcp-server-install';
             $scriptsChanged = true;
         }
 

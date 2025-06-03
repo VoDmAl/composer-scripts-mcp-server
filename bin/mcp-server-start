@@ -36,8 +36,8 @@ use VoDmAl\ComposerScriptsMCP\Application;
 // Create the application
 $application = new Application();
 
-// Run the application with the install-claude command
-$application->setDefaultCommand('install-claude', true);
+// Run the application with the start-server command
+$application->setDefaultCommand('start-server', true);
 $exitCode = $application->run();
 
 exit($exitCode);

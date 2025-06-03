@@ -106,8 +106,8 @@ class ComposerScriptsPluginTest extends TestCase
         $this->assertArrayHasKey('mcp:server:start', $updatedComposerJson['scripts']);
         $this->assertArrayHasKey('mcp:server:install', $updatedComposerJson['scripts']);
 
-        $this->assertEquals('vendor/bin/start-server', $updatedComposerJson['scripts']['mcp:server:start']);
-        $this->assertEquals('vendor/bin/install-claude', $updatedComposerJson['scripts']['mcp:server:install']);
+        $this->assertEquals('vendor/bin/mcp-server-start', $updatedComposerJson['scripts']['mcp:server:start']);
+        $this->assertEquals('vendor/bin/mcp-server-install', $updatedComposerJson['scripts']['mcp:server:install']);
 
         // Clean up
         unlink($composerJsonPath);

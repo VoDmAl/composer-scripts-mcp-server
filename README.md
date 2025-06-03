@@ -90,8 +90,8 @@ composer install
 As soon as Composer finishes, your project's composer.json will include two new scripts:
 ```
 "scripts": {
-    "mcp:server:start": "vendor/bin/start-server",
-    "mcp:server:install": "vendor/bin/install-claude"
+    "mcp:server:start": "vendor/bin/mcp-server-start",
+    "mcp:server:install": "vendor/bin/mcp-server-install"
 }
 ```
 
@@ -124,7 +124,7 @@ will output a JSON block showing exactly how to launch the MCP server. Copy that
 To start the server with stdio transport (for integration with AI assistants):
 
 ```bash
-vendor/bin/start-server
+vendor/bin/mcp-server-start
 ```
 
 ### With HTTP Transport
@@ -132,17 +132,17 @@ vendor/bin/start-server
 To start the server with HTTP transport (for testing with the client):
 
 ```bash
-vendor/bin/start-server --http [--host=<host>] [--port=<port>]
+vendor/bin/mcp-server-start --http [--host=<host>] [--port=<port>]
 ```
 
 By default, the server will listen on `127.0.0.1:8088`.
 
 ## Integration with Claude Desktop
 
-To integrate this MCP server with Claude Desktop, you can use the provided `install-claude` command:
+To integrate this MCP server with Claude Desktop, you can use the provided `mcp-server-install` command:
 
 ```bash
-vendor/bin/install-claude
+vendor/bin/mcp-server-install
 ```
 
 This command will automatically detect your operating system and search for the Claude Desktop configuration file. If found, it will update it to include the MCP server configuration. If not found, it will output the configuration that you need to manually merge with your Claude Desktop configuration file. The server will automatically expose all Composer scripts in your project as MCP tools.
@@ -158,10 +158,10 @@ If you have multiple PHP projects with this library installed, you can add each 
 
 ```bash
 # In project1
-vendor/bin/install-claude --name=project1
+vendor/bin/mcp-server-install --name=project1
 
 # In project2
-vendor/bin/install-claude --name=project2 --output=/path/to/claude_desktop_config.json
+vendor/bin/mcp-server-install --name=project2 --output=/path/to/claude_desktop_config.json
 ```
 
 ## Using the Configuration
@@ -183,7 +183,7 @@ If the server isn't being picked up by Claude Desktop:
    - Windows: `%APPDATA%\Claude\logs`
 5. Try manually running the server to see if you get any errors:
    ```bash
-   vendor/bin/start-server
+   vendor/bin/mcp-server-start
    ```
 
 > **Note:** When using stdio transport with LLM applications, all log messages are written to stderr instead of stdout. This prevents log messages from interfering with the JSON communication between the server and the LLM application, which could cause JSON parsing errors.

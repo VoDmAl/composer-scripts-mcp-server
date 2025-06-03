@@ -44,12 +44,12 @@
         "test:unit:phpunit": [
             "@phpunit --testsuite Unit"
         ],
-        "mcp:scripts:start": "bin/start-server",
-        "mcp:scripts:install:claude": "bin/install-claude"
+        "mcp:server:start": "bin/mcp-server-start",
+        "mcp:server:install": "bin/mcp-server-install"
     },
     "bin": [
-        "bin/start-server",
-        "bin/install-claude"
+        "bin/mcp-server-start",
+        "bin/mcp-server-install"
     ],
     "extra": {
         "class": "VoDmAl\\ComposerScriptsMCP\\Plugin\\ComposerScriptsPlugin"

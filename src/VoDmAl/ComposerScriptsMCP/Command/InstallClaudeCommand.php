@@ -35,7 +35,7 @@ class InstallClaudeCommand extends Command
     private ?string $outputFile;
 
     /**
-     * @var string The path to the start-server script
+     * @var string The path to the mcp-server-start script
      */
     private string $serverPath;
 
@@ -120,7 +120,7 @@ class InstallClaudeCommand extends Command
 
         // Check if the server path was found
         if (!$this->serverPath) {
-            $io->error("Could not find start-server script. Please ensure the package is installed correctly.");
+            $io->error("Could not find mcp-server-start script. Please ensure the package is installed correctly.");
             return Command::FAILURE;
         }
 
@@ -175,15 +175,15 @@ class InstallClaudeCommand extends Command
     }
 
     /**
-     * Find the path to the start-server script.
+     * Find the path to the mcp-server-start script.
      *
-     * @return string|null The path to the start-server script, or null if not found
+     * @return string|null The path to the mcp-server-start script, or null if not found
      */
     private function findServerPath(): ?string
     {
         $paths = [
-                __DIR__ . '/../../../../bin/start-server',
-                __DIR__ . '/../../../../../../../bin/start-server',
+                __DIR__ . '/../../../../bin/mcp-server-start',
+                __DIR__ . '/../../../../../../../bin/mcp-server-start',
         ];
 
         foreach ($paths as $path) {
