@@ -66,9 +66,9 @@ class InstallClaudeCommand extends Command
     }
 
     /**
-     * Get the project name from composer.json.
+     * Get the project name from composer.json or directory name.
      *
-     * @return string The project name or 'composer' if not found
+     * @return string The project name, directory name, or 'composer' if neither is found
      */
     private function getProjectName(): string
     {
@@ -87,6 +87,13 @@ class InstallClaudeCommand extends Command
                     // Extract the package name from the full name (vendor/package)
                     $parts = explode('/', $composer['name']);
                     return end($parts);
+                }
+
+                // If name is not in composer.json, use the directory name
+                $dirPath = dirname($path);
+                $dirName = basename($dirPath);
+                if (!empty($dirName)) {
+                    return $dirName;
                 }
 
                 break;
